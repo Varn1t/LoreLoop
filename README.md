@@ -1,8 +1,8 @@
 <div align="center">
 
-# 📚 RAG Chatbot
+# 📚 Premium RAG Chatbot Suite
 
-**Chat with any PDF or YouTube video — 100% locally, zero API costs.**
+**Chat with any PDF or YouTube video — 100% locally, with a high-fidelity glassmorphic SaaS interface and zero API costs.**
 
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 [![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io)
@@ -13,7 +13,6 @@
 </div>
 
 ---
-<img width="1253" height="606" alt="image" src="https://github.com/user-attachments/assets/d0f78737-6492-4f34-8f08-b15b902681d4" />
 
 ## 🧠 What is RAG?
 
@@ -40,17 +39,19 @@ Your PDF / YouTube Video
 
 ---
 
-## ✨ Features
+## ✨ Features & Visual Upgrades
 
 | Feature | Description |
 |---|---|
-| 📄 PDF Upload | Drag and drop any PDF directly in the browser |
-| 🎥 YouTube Support | Paste any YouTube URL to chat with video transcripts |
-| 🖥️ CLI Mode | Run the full pipeline from the terminal with `main.py` |
-| 🔒 Fully Local | No OpenAI key, no API costs — runs entirely on your machine |
-| 🎯 Grounded Answers | Responses are based on your document, not hallucinated |
-| 💬 Chat History | Conversation persists throughout your session |
-| ⚡ Auto Re-embed | Switch sources and it re-indexes automatically |
+| 🎨 **Premium SaaS UI/UX** | Dark-mode glassmorphic styling, custom gradient branding, and elegant `Plus Jakarta Sans` typography. |
+| 🎛️ **Interactive Sidebar Control** | Complete control panel in the sidebar, separating data ingestion and configurations from the clean main chat view. |
+| 📊 **Active Source Telemetry** | Glassmorphic telemetry panel detailing parsed chunk counts, character count metrics, active embeddings, and model status. |
+| ⚙️ **Real-time Param Tuning** | Live sliders for adjusting **Chunk Size**, **Overlap**, and **Top K Retrieved Chunks** for advanced model optimization. |
+| 🔄 **Smart Index Re-builder** | Notifies you when parameter settings differ from the active vector index, allowing on-demand rebuilds to avoid system lag. |
+| 📄 **PDF Upload** | Drag and drop any PDF directly into the secure local ingestion area. |
+| 🎥 **YouTube Support** | Paste any YouTube video URL to automatically parse video transcripts and query their contexts. |
+| 🔒 **100% Fully Local** | Runs entirely on your local machine via Ollama and FAISS CPU. Zero API costs, zero tracking, total privacy. |
+| 🖥️ **CLI Mode** | Toggle interactive terminal conversations using the standalone `main.py` client. |
 
 ---
 
@@ -58,12 +59,12 @@ Your PDF / YouTube Video
 
 | Component | Tool |
 |---|---|
-| 🤖 LLM | `llama3` via [Ollama](https://ollama.com) |
-| 🔢 Embeddings | `all-MiniLM-L6-v2` (HuggingFace Sentence Transformers) |
-| 🗄️ Vector Store | FAISS (CPU) |
-| 📑 PDF Parsing | LangChain + PyPDF |
-| 🎥 YouTube Transcripts | `youtube-transcript-api` |
-| 🖥️ Web UI | Streamlit |
+| 🤖 **LLM** | `llama3` (or customizable choices) via [Ollama](https://ollama.com) |
+| 🔢 **Embeddings** | `all-MiniLM-L6-v2` (HuggingFace Sentence Transformers) |
+| 🗄️ **Vector Store** | FAISS (CPU-based local vector store) |
+| 📑 **PDF Parsing** | LangChain + PyPDF |
+| 🎥 **YouTube Transcripts** | `youtube-transcript-api` |
+| 🖥️ **Web UI Engine** | Streamlit (injected with custom glassmorphic CSS overrides) |
 
 ---
 
@@ -72,7 +73,7 @@ Your PDF / YouTube Video
 ### Prerequisites
 - Python 3.11+
 - [Ollama](https://ollama.com) installed and running
-- ~5 GB disk space for the llama3 model
+- ~5 GB disk space for local models (e.g. `llama3` or `mistral`)
 
 ### Step-by-step
 
@@ -87,18 +88,18 @@ cd PDF-RAG-Chatbot
 pip install -r requirements.txt
 ```
 
-**3. Pull the LLM model with Ollama**
+**3. Pull the local LLM model using Ollama**
 ```bash
 ollama pull llama3
 ```
 
-**4a. Launch the Streamlit web app**
+**4a. Launch the Premium Web App**
 ```bash
 streamlit run app.py
 ```
-Then open **http://localhost:8501** in your browser.
+Open **http://localhost:8501** in your web browser.
 
-**4b. Or run the CLI version**
+**4b. Or run the CLI version in your terminal**
 ```bash
 python main.py
 ```
@@ -109,33 +110,28 @@ python main.py
 
 ```
 PDF-RAG-Chatbot/
-├── app.py              # Streamlit web app (PDF + YouTube)
-├── main.py             # Interactive CLI version (PDF + YouTube)
-├── requirements.txt    # Python dependencies
+├── app.py              # Redesigned Premium Web Interface (PDF + YouTube + Parameters + Telemetry)
+├── main.py             # Standalone interactive CLI terminal script
+├── requirements.txt    # Required project Python dependencies
 ├── .gitignore
-└── README.md
+└── README.md           # Project documentation
 ```
 
 ---
 
-## ⚙️ How It Works
+## ⚙️ How It Works (Web Application UI)
 
-### Web App (`app.py`)
-1. **Upload** a PDF or paste a YouTube URL in the Streamlit UI
-2. The app **chunks** the content into 1,000-character segments with 50-character overlap
-3. Each chunk is **embedded** using `all-MiniLM-L6-v2` and stored in a FAISS index
-4. When you ask a question, the **top 3 most relevant chunks** are retrieved
-5. Those chunks are passed as context to **llama3**, which generates a precise answer
+1. **Upload & Ingestion**: Select your source type (**PDF Upload** or **YouTube Video**) in the sidebar menu.
+2. **Dynamic Splitting**: Customize chunk sizes (fully configurable from 200 to 2,000 characters) and overlap thresholds (from 0 to 300 characters) in the configuration panel rather than relying on hardcoded defaults.
+3. **Local Vectorization**: Chunks are embedded locally via `all-MiniLM-L6-v2` and placed inside a local memory-resident FAISS vector database.
+4. **Context Telemetry**: A dashboard updates dynamically to show you character lengths, chunk statistics, and active pipeline statuses.
+5. **Grounded Question Answering**: When you chat, the engine retrieves the top $k$ most relevant context segments (configurable from 1 to 5 retrieved chunks) and feeds them into the local model, ensuring grounded answers without hallucinations.
 
-### CLI (`main.py`)
-1. Choose to load a **PDF** (local path or URL) or **YouTube video** (URL)
-2. The script builds the same RAG pipeline in your terminal
-3. Enter your questions in an interactive chat loop — type `exit` to quit
 
 ---
 
 <div align="center">
 
-Made by Varnit using LangChain, FAISS, Ollama, Streamlit, and youtube-transcript-api
+Made by Varnit using LangChain, FAISS, Ollama, Streamlit, and youtube-transcript-api.
 
 </div>

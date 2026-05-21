@@ -10,18 +10,101 @@ from langchain_core.documents import Document
 from youtube_transcript_api import YouTubeTranscriptApi, FetchedTranscript
 import os
 
-st.set_page_config(page_title="RAG Bot", page_icon="📚")
-st.title("📚 RAG Chatbot")
-st.caption("Powered by RAG + llama3")
+# 1. Page Configuration (Wide Layout for premium SaaS appearance)
+st.set_page_config(
+    page_title="RAG Intelligent Engine",
+    page_icon="📚",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
-def build_qa_chain(docs):
-    splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=50)
+# 2. Premium Design System: Inject CSS for customized UI elements
+st.markdown("""
+<style>
+    /* Import Plus Jakarta Sans for a clean, modern aesthetic */
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+    
+    /* Apply clean font styles globally */
+    html, body, [class*="css"], .stMarkdown {
+        font-family: 'Plus Jakarta Sans', sans-serif !important;
+    }
+    
+    /* Glassmorphic card custom containers */
+    .premium-card {
+        background: rgba(17, 25, 40, 0.65);
+        backdrop-filter: blur(12px) saturate(180%);
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 24px;
+        margin-bottom: 24px;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
+    }
+    
+    .glow-card {
+        background: linear-gradient(135deg, rgba(29, 38, 113, 0.2) 0%, rgba(195, 55, 100, 0.05) 100%);
+        backdrop-filter: blur(12px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 30px;
+        margin-bottom: 24px;
+        box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Sleek gradient brand titles */
+    .gradient-text {
+        background: linear-gradient(90deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 700;
+    }
+    
+    /* Advanced Telemetry metric style rules */
+    .metric-label {
+        font-size: 0.75rem;
+        color: #9ca3af;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-weight: 500;
+        margin-bottom: 4px;
+    }
+    
+    .metric-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #f3f4f6;
+    }
+    
+    /* Green status indicators */
+    .status-dot {
+        height: 10px;
+        width: 10px;
+        background-color: #10b981;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 8px;
+        box-shadow: 0 0 10px #10b981;
+    }
+    
+    .sidebar-header {
+        font-size: 1.15rem;
+        font-weight: 700;
+        margin-bottom: 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        padding-bottom: 12px;
+        text-align: center;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# 3. Helpers & Core RAG Pipeline functions
+def build_qa_chain(docs, chunk_size, chunk_overlap, k, model_name):
+    splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
     chunks = splitter.split_documents(docs)
     embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     vectorstore = FAISS.from_documents(chunks, embeddings)
-    retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
-    llm = OllamaLLM(model="llama3")
-    return RetrievalQA.from_chain_type(llm=llm, retriever=retriever)
+    retriever = vectorstore.as_retriever(search_kwargs={"k": k})
+    llm = OllamaLLM(model=model_name)
+    return RetrievalQA.from_chain_type(llm=llm, retriever=retriever), len(chunks)
 
 def process_pdf(uploaded_file):
     with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as f:
@@ -46,52 +129,238 @@ def load_youtube(url):
     full_text = " ".join([t.text for t in transcript])
     return [Document(page_content=full_text, metadata={"source": url})]
 
-# UI
-uploaded_file = st.file_uploader("Upload a PDF", type="pdf")
-yt_url = st.text_input("Or paste a YouTube URL")
-
-source_key = None
-docs = None
-
-if uploaded_file:
-    source_key = uploaded_file.name
-elif yt_url:
-    source_key = yt_url
-
-if source_key and source_key != st.session_state.get("current_source"):
-    st.session_state.current_source = source_key
+# Initialize session state variables
+if "messages" not in st.session_state:
     st.session_state.messages = []
-    with st.spinner("Processing document..."):
-        try:
-            if uploaded_file:
-                docs = process_pdf(uploaded_file)
-            else:
-                docs = load_youtube(yt_url)
-            st.session_state.qa_chain = build_qa_chain(docs)
-        except Exception as e:
-            st.error(f"Error processing: {e}")
-            st.session_state.current_source = None
+if "current_source" not in st.session_state:
+    st.session_state.current_source = None
 
-if source_key and "qa_chain" in st.session_state:
-    if "messages" not in st.session_state:
+# 4. Sidebar configuration
+with st.sidebar:
+    st.markdown('<div class="sidebar-header"><span class="gradient-text">📚 INTELLIGENT RAG</span></div>', unsafe_allow_html=True)
+    
+    # Sleek document source selection tabs
+    loader_type = st.radio(
+        "Select Document Source Type", 
+        ["📄 PDF Upload", "🎥 YouTube Link"], 
+        help="Choose between uploading a PDF document or pasting a YouTube video URL."
+    )
+    
+    uploaded_file = None
+    yt_url = None
+    
+    if loader_type == "📄 PDF Upload":
+        uploaded_file = st.file_uploader("Upload a PDF document", type="pdf", label_visibility="collapsed")
+    else:
+        yt_url = st.text_input("Paste YouTube Video URL", placeholder="https://youtube.com/watch?v=...", label_visibility="collapsed")
+        
+    st.markdown("---")
+    st.markdown("### ⚙️ Engine Parameters")
+    
+    chunk_size = st.slider(
+        "Chunk Size", 
+        min_value=200, 
+        max_value=2000, 
+        value=1000, 
+        step=100, 
+        help="Number of characters in each chunk split."
+    )
+    chunk_overlap = st.slider(
+        "Chunk Overlap", 
+        min_value=0, 
+        max_value=300, 
+        value=50, 
+        step=10, 
+        help="Overlap characters between chunk boundary splits."
+    )
+    retrieval_k = st.slider(
+        "Top K Retrieved Chunks", 
+        min_value=1, 
+        max_value=5, 
+        value=3, 
+        step=1, 
+        help="Number of matching context chunks fetched and sent to LLM."
+    )
+    ollama_model = st.text_input(
+        "Ollama Model", 
+        value="llama3", 
+        help="The local model name deployed on your running Ollama server."
+    )
+    
+    st.markdown("---")
+    
+    # Sidebar quick-action button
+    if st.button("🗑️ Clear Chat History", use_container_width=True):
         st.session_state.messages = []
+        st.toast("Chat history cleared!", icon="🧹")
 
+# Resolve active upload source key
+source_key = None
+if loader_type == "📄 PDF Upload" and uploaded_file:
+    source_key = uploaded_file.name
+elif loader_type == "🎥 YouTube Link" and yt_url and yt_url.strip():
+    source_key = yt_url.strip()
+
+# 5. Core logic mapping state index triggers
+if source_key:
+    # Evaluate changes to either active source or pipeline settings
+    params_changed = (
+        source_key != st.session_state.get("current_source") or
+        chunk_size != st.session_state.get("indexed_chunk_size") or
+        chunk_overlap != st.session_state.get("indexed_chunk_overlap") or
+        retrieval_k != st.session_state.get("indexed_k") or
+        ollama_model != st.session_state.get("indexed_model")
+    )
+    
+    is_new_source = source_key != st.session_state.get("current_source")
+    
+    # Process if it is a brand new source loading in
+    if is_new_source:
+        st.session_state.current_source = source_key
+        st.session_state.messages = []
+        if "loaded_docs" in st.session_state:
+            del st.session_state.loaded_docs
+            
+        with st.spinner("⚡ Parsing & Indexing document source..."):
+            try:
+                if uploaded_file:
+                    docs = process_pdf(uploaded_file)
+                else:
+                    docs = load_youtube(yt_url)
+                
+                st.session_state.loaded_docs = docs
+                
+                total_chars = sum(len(d.page_content) for d in docs)
+                chain, num_chunks = build_qa_chain(docs, chunk_size, chunk_overlap, retrieval_k, ollama_model)
+                
+                st.session_state.qa_chain = chain
+                st.session_state.num_chunks = num_chunks
+                st.session_state.total_chars = total_chars
+                st.session_state.indexed_chunk_size = chunk_size
+                st.session_state.indexed_chunk_overlap = chunk_overlap
+                st.session_state.indexed_k = retrieval_k
+                st.session_state.indexed_model = ollama_model
+                st.toast("✅ Document indexed successfully!", icon="🔥")
+            except Exception as e:
+                st.error(f"Error processing document: {e}")
+                st.session_state.current_source = None
+                
+    elif params_changed:
+        # Prompt option to trigger re-indexing when parameters change
+        with st.sidebar:
+            st.warning("⚠️ Parameters differ from current vector index.")
+            if st.button("🔄 Re-build Vector Index", use_container_width=True):
+                with st.spinner("🔄 Updating vector index with new settings..."):
+                    try:
+                        # Retrieve already parsed/fetched docs from session state to avoid re-reading or re-fetching
+                        docs = st.session_state.get("loaded_docs")
+                        if not docs:
+                            if uploaded_file:
+                                docs = process_pdf(uploaded_file)
+                            else:
+                                docs = load_youtube(yt_url)
+                            st.session_state.loaded_docs = docs
+                        
+                        total_chars = sum(len(d.page_content) for d in docs)
+                        chain, num_chunks = build_qa_chain(docs, chunk_size, chunk_overlap, retrieval_k, ollama_model)
+                        
+                        st.session_state.qa_chain = chain
+                        st.session_state.num_chunks = num_chunks
+                        st.session_state.total_chars = total_chars
+                        st.session_state.indexed_chunk_size = chunk_size
+                        st.session_state.indexed_chunk_overlap = chunk_overlap
+                        st.session_state.indexed_k = retrieval_k
+                        st.session_state.indexed_model = ollama_model
+                        st.toast("✅ Vector index successfully updated!", icon="🔄")
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"Error during re-indexing: {e}")
+
+
+# 6. Main Content Area Rendering
+if st.session_state.get("current_source") and "qa_chain" in st.session_state:
+    # Visual status card of loaded document telemetry
+    source_name = st.session_state.current_source
+    if len(source_name) > 65:
+        source_name = source_name[:62] + "..."
+        
+    st.markdown(f"""
+        <div class="premium-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                <span style="font-size: 1.15rem; font-weight: 700; color: #f3f4f6; display: flex; align-items: center;">
+                    <span class="status-dot"></span> Active Source: <span class="gradient-text" style="margin-left: 8px;">{source_name}</span>
+                </span>
+                <span style="background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.4); padding: 5px 12px; border-radius: 12px; font-size: 0.8rem; color: #a5b4fc; font-weight: 600; letter-spacing: 0.05em;">
+                    ⚡ PIPELINE ACTIVE
+                </span>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px;">
+                <div style="background: rgba(255, 255, 255, 0.02); padding: 12px 18px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div class="metric-label">Parsed Chunks</div>
+                    <div class="metric-value">{st.session_state.num_chunks}</div>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.02); padding: 12px 18px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div class="metric-label">Total Characters</div>
+                    <div class="metric-value">{st.session_state.total_chars:,}</div>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.02); padding: 12px 18px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div class="metric-label">Ollama Model</div>
+                    <div class="metric-value" style="color: #ec4899; font-size: 1.6rem; line-height: 2.2rem;">{st.session_state.indexed_model}</div>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.02); padding: 12px 18px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div class="metric-label">Embeddings</div>
+                    <div class="metric-value" style="color: #6366f1; font-size: 1.4rem; line-height: 2.2rem;">all-MiniLM-L6</div>
+                </div>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    # Render active dialog history
     for msg in st.session_state.messages:
-        st.chat_message(msg["role"]).write(msg["content"])
-
-    if query := st.chat_input(f"Ask a question about {source_key}..."):
+        with st.chat_message(msg["role"]):
+            st.markdown(msg["content"])
+            
+    # Process user text message input query
+    if query := st.chat_input(f"Ask a question about {source_name}..."):
         st.session_state.messages.append({"role": "user", "content": query})
-        st.chat_message("user").write(query)
-
+        with st.chat_message("user"):
+            st.markdown(query)
+            
         with st.chat_message("assistant"):
-            with st.spinner("Thinking..."):
+            ans_placeholder = st.empty()
+            with st.spinner("💭 Thinking..."):
                 try:
                     response = st.session_state.qa_chain.invoke({"query": query})
                     answer = response["result"]
-                    st.write(answer)
+                    ans_placeholder.markdown(answer)
                     st.session_state.messages.append({"role": "assistant", "content": answer})
                 except Exception as e:
                     st.error(f"Error querying model: {e}")
+                    
 else:
-    if not source_key:
-        st.info("☝️ Upload a PDF or paste a YouTube URL to get started.")
+    # 7. Render Custom Hero Hub empty state
+    st.markdown("""
+        <div class="glow-card" style="text-align: center; margin-top: 10%;">
+            <h1 style="margin: 0; font-size: 2.5rem;"><span class="gradient-text">📚 INTELLIGENT RAG HUB</span></h1>
+            <p style="color: #9ca3af; font-size: 1.1rem; margin-top: 10px; margin-bottom: 30px;">
+                Chat seamlessly with your PDFs or YouTube Video Transcripts — fully locally, privately, and with zero API costs.
+            </p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; text-align: left; margin-bottom: 10px;">
+                <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 12px;">
+                    <h4 style="color: #a855f7; margin-top: 0; margin-bottom: 8px;">⚡ High Performance</h4>
+                    <p style="color: #9ca3af; font-size: 0.85rem; margin: 0; line-height: 1.4;">Instant vector indexing using FAISS CPU combined with local sentence embeddings.</p>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 12px;">
+                    <h4 style="color: #6366f1; margin-top: 0; margin-bottom: 8px;">🔒 100% Secure & Local</h4>
+                    <p style="color: #9ca3af; font-size: 0.85rem; margin: 0; line-height: 1.4;">Powered by local llama3 via Ollama. None of your data ever leaves your computer.</p>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 12px;">
+                    <h4 style="color: #ec4899; margin-top: 0; margin-bottom: 8px;">🎥 YouTube Integration</h4>
+                    <p style="color: #9ca3af; font-size: 0.85rem; margin: 0; line-height: 1.4;">Paste a video link to fetch its transcript automatically and run contextual queries.</p>
+                </div>
+            </div>
+            <p style="color: #6b7280; font-size: 0.9rem; margin-top: 25px;">
+                👈 <b>To get started, select your source and load it in the Sidebar menu on the left.</b>
+            </p>
+        </div>
+    """, unsafe_allow_html=True)
