@@ -1,6 +1,6 @@
 <div align="center">
 
-# 📚 ContextFlow
+# 🌀 LoreLoop
 
 **Chat with any PDF or YouTube video — 100% locally, with a self-correcting agentic loop, dual-graded answer verification, conversational memory, and zero API costs.**
 
@@ -106,8 +106,8 @@ User Question
 
 **1. Clone the repository**
 ```bash
-git clone https://github.com/Varn1t/ContextFlow.git
-cd ContextFlow
+git clone https://github.com/Varn1t/LoreLoop.git
+cd LoreLoop
 ```
 
 **2. Install dependencies**
@@ -136,7 +136,7 @@ python main.py
 ## 🗂️ Project Structure
 
 ```
-ContextFlow/
+LoreLoop/
 ├── agent.py          # LangGraph agent — state, nodes, edges, dual grader, pipeline builder
 ├── app.py            # Streamlit web UI with telemetry and parameter controls
 ├── main.py           # CLI interface with iteration diagnostics

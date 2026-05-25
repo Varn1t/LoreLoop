@@ -8,8 +8,8 @@ import agent
 
 # 1. Page Configuration (Wide Layout for premium SaaS appearance)
 st.set_page_config(
-    page_title="ContextFlow Intelligent Engine",
-    page_icon="📚",
+    page_title="LoreLoop Intelligent Engine",
+    page_icon="🌀",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -168,7 +168,7 @@ if "current_source" not in st.session_state:
 
 # 4. Sidebar configuration
 with st.sidebar:
-    st.markdown('<div class="sidebar-header"><span class="gradient-text">📚 ContextFlow</span></div>', unsafe_allow_html=True)
+    st.markdown('<div class="sidebar-header"><span class="gradient-text">🌀 LoreLoop</span></div>', unsafe_allow_html=True)
     
     # Sleek document source selection tabs
     loader_type = st.radio(
@@ -399,7 +399,7 @@ else:
     # 7. Render Custom Hero Hub empty state
     st.markdown("""
         <div class="glow-card" style="text-align: center; margin-top: 10%;">
-            <h1 style="margin: 0; font-size: 2.5rem;"><span class="gradient-text">📚 ContextFlow Hub</span></h1>
+            <h1 style="margin: 0; font-size: 2.5rem;"><span class="gradient-text">🌀 LoreLoop Hub</span></h1>
             <p style="color: #9ca3af; font-size: 1.1rem; margin-top: 10px; margin-bottom: 30px;">
                 Chat seamlessly with your PDFs or YouTube Video Transcripts — fully locally, privately, and with zero API costs.
             </p>
