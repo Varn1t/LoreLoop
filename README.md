@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="assets/loreloop_banner.png" alt="LoreLoop Header Banner" width="100%" />
+
 # 🌀 LoreLoop
 
 **Chat with any PDF or YouTube video — 100% locally, with a self-correcting agentic loop, dual-graded answer verification, conversational memory, and zero API costs.**
@@ -47,32 +49,61 @@ Everything runs locally via Ollama and FAISS. No API keys. No data leaving your 
 
 ---
 
+## 🖥️ User Interface Gallery
+
+### 🌐 Streamlit Web Application
+
+LoreLoop features a custom dark-themed user interface with clean glassmorphic container cards and comprehensive system telemetry indicators.
+
+#### 1. Active Document & Pipeline Status
+Displays when a PDF or YouTube video is loaded, showing live chunking statistics and index parameters:
+<img src="assets/active_pipeline.png" alt="Active Pipeline Telemetry" width="100%" />
+
+#### 2. Agentic Self-Correction & Groundedness Grading
+Shows the conversational assistant response alongside the expanded **Agentic Self-Corrective Telemetry** panel, displaying fact-checker status and retrieved context chunks:
+<img src="assets/streamlit_question.png" alt="Streamlit Question and Telemetry" width="100%" />
+
+*The conversational memory automatically reformulates follow-up queries like "Give examples for it" into clear standalone questions (e.g., "What are some common applications or examples of Deep Learning?") using prior chat history before running the agent node loop:*
+<img src="assets/streamlit_memory.png" alt="Streamlit Conversational Memory Telemetry" width="100%" />
+
+---
+
+### 💻 CLI Diagnostic Interface
+
+The CLI version provides detailed terminal output highlighting the query rephrasing and state transitions inside the agent loop:
+<img src="assets/cli_telemetry.png" alt="CLI Diagnostic Telemetry" width="100%" />
+
+---
+
 ## 🏗️ How the Agent Works
 
-```
-User Question
-     │
-     ▼
-[contextualize_query]  →  Rephrase follow-ups using chat history (e.g. "it" → "Expert Systems")
-     │
-     ▼
-[retrieve]  →  Pull top-K chunks from FAISS vector index
-     │
-     ▼
-[generate]  →  LLM answers using ONLY the retrieved context
-     │
-     ▼
-[check_hallucination]  →  Dual grader: GROUNDED (yes/no) + RELEVANT (yes/no)
-     │
-     ├── GROUNDED + RELEVANT ────────────────▶ Return answer ✅
-     │
-     ├── either fails + iterations < N ──────▶ [rewrite_query] → back to [retrieve] 🔄
-     │                                              ↑
-     │                                    rewriter receives specific
-     │                                    failure reason (hallucinated /
-     │                                    off-topic / both)
-     │
-     └── either fails + iterations == N ────▶ "Information not found in document" ❌
+```mermaid
+graph TD
+    %% Define Styles
+    classDef startEnd fill:#1e1b4b,stroke:#818cf8,stroke-width:2px,color:#fff;
+    classDef nodeStyle fill:#0f172a,stroke:#38bdf8,stroke-width:1.5px,color:#e2e8f0;
+    classDef checkStyle fill:#1e293b,stroke:#a855f7,stroke-width:2px,color:#fff;
+    classDef successStyle fill:#064e3b,stroke:#34d399,stroke-width:2px,color:#fff;
+    classDef failureStyle fill:#7f1d1d,stroke:#f87171,stroke-width:2px,color:#fff;
+
+    Start([User Question]) :::startEnd
+    Contextualize[contextualize_query<br>Rephrase using chat history] :::nodeStyle
+    Retrieve[retrieve<br>Get top-K chunks from FAISS] :::nodeStyle
+    Generate[generate<br>Answer using context] :::nodeStyle
+    Check{check_hallucination<br>Grounded & Relevant?} :::checkStyle
+    Rewrite[rewrite_query<br>Targeted rewrite using failure reason] :::nodeStyle
+    Success([Return Answer ✅]) :::successStyle
+    Failure([Information not found ❌]) :::failureStyle
+
+    Start --> Contextualize
+    Contextualize --> Retrieve
+    Retrieve --> Generate
+    Generate --> Check
+
+    Check -- "Grounded & Relevant" --> Success
+    Check -- "Either Fails & Iterations < N" --> Rewrite
+    Rewrite --> Retrieve
+    Check -- "Either Fails & Iterations == N" --> Failure
 ```
 
 **Two distinct query rewriting steps exist for two different reasons:**
