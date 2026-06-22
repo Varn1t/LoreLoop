@@ -203,7 +203,7 @@ sentence-transformers
 
 - **LLM-as-judge** — Implemented dual-graded self-correction; identified that local 8B models have reliability ceiling as LLM-as-judge — production deployment would require a stronger model or dedicated NLI scorer.
 - **Single document per session** — the current implementation indexes one source at a time. Multi-document support is a planned upgrade.
-- **Local model quality** — grounding and relevance accuracy are directly tied to the capability of the Ollama model you pull. `llama3` is recommended as the minimum.
+- **Local model quality** — grounding and relevance accuracy are directly tied to the capability of the Ollama model you pull. `llama3` is recommended as the minimum. 
 
 ---
 
