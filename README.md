@@ -116,7 +116,7 @@ graph TD
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Tech Stack 
 
 | Component | Tool |
 |---|---|
