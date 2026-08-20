@@ -15,7 +15,7 @@
 
 ---
 
-## 🧠 What is this?
+## 🧠 What is this? 
 
 Most RAG demos stop at "retrieve chunks → generate answer." This project goes further — it uses a **LangGraph state-machine agent** that grades its own answers across two independent dimensions, detects failures, and automatically rewrites queries with targeted awareness of *what went wrong* before re-retrieving.
 
