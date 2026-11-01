@@ -1,5 +1,6 @@
 # FAISS index (large binary files, regenerated on run)
 rag_index/
+eval_results/
 
 # Python
 __pycache__/
@@ -34,3 +35,14 @@ Thumbs.db
 
 # Local files
 rag_index/
+
+# AI tool config, local drafts, session handoff notes
+.claude/
+.codex/
+.gemini/
+.ai/
+.obsidian/
+.cursor/
+.windsurf/
+_drafts/
+*_last_context.md

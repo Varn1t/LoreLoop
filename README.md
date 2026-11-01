@@ -40,8 +40,16 @@ Everything runs locally via Ollama and FAISS. No API keys. No data leaving your 
 | 🕵️ **Agentic Telemetry** | Expandable per-response panel showing every iteration's query, generated answer, retrieved chunks, and dual verdict |
 | ⚙️ **Live Parameter Control** | Sidebar sliders for chunk size, overlap, top-K retrieval, max correction iterations, and memory window |
 | 🔄 **Smart Re-indexer** | Detects when sidebar parameters differ from the active vector index and prompts a targeted rebuild |
+| 📚 **Multi-Source Chat** | Mix any number of PDFs and YouTube videos in one session; they are searched together |
+| 📎 **Cited Answers** | Every answer lists its sources: PDF page numbers and clickable YouTube timestamps |
+| 🔎 **Hybrid Search** | Semantic FAISS + keyword BM25, merged with reciprocal rank fusion, so exact names, numbers and IDs aren't missed |
+| 💾 **Persistent Index** | Indexes are cached in `rag_index/` keyed by content + settings, so re-opening a source skips re-embedding |
+| 🛟 **Best-Attempt Fallback** | If retries run out, the latest grounded draft is returned with a warning instead of a flat "not found" |
+| 📝 **Auto Overview** | When sources load, a summary, key points and clickable suggested questions are generated (cached on disk) |
+| 📊 **Evaluation Harness** | `evaluate.py` scores retrieval hits, answer accuracy, verification rate and latency on a fixed question set |
+| 📡 **Live Agent Progress** | The UI shows each step as it runs: searching, drafting, fact-checking, rewriting |
 | 📄 **PDF Support** | Drag-and-drop local PDF ingestion via PyPDF |
-| 🎥 **YouTube Support** | Paste any YouTube URL to auto-fetch and query its transcript |
+| 🎥 **YouTube Support** | Paste YouTube URLs (watch, youtu.be, Shorts, embed, live) to auto-fetch and query transcripts |
 | 🔒 **Fully Local** | Ollama + FAISS CPU — zero API costs, zero tracking, total privacy |
 | 🖥️ **CLI Mode** | Full terminal interface via `main.py` with diagnostic iteration logs |
 
@@ -123,7 +131,8 @@ graph TD
 | 🧠 **Agent Framework** | LangGraph (state-machine with conditional edges and retry loop) |
 | 🤖 **LLM** | `llama3` / `mistral` / `gemma` / `phi3` via Ollama |
 | 🔢 **Embeddings** | `all-MiniLM-L6-v2` — HuggingFace Sentence Transformers |
-| 🗄️ **Vector Store** | FAISS (CPU-based, no server required) |
+| 🗄️ **Vector Store** | FAISS (CPU-based, no server required), persisted to `rag_index/` |
+| 🔤 **Keyword Search** | BM25 via `rank_bm25`, fused with FAISS results |
 | 📑 **PDF Parsing** | LangChain + PyPDFLoader |
 | 🎥 **YouTube Transcripts** | `youtube-transcript-api` |
 | 🖥️ **Web UI** | Streamlit with custom glassmorphic CSS |
@@ -168,6 +177,26 @@ python main.py
 
 ---
 
+## 📊 Evaluating Answer Quality
+
+`evaluate.py` runs a fixed question set through the full agent and reports:
+
+| Metric | Meaning |
+|---|---|
+| **retrieval_hit_%** | The expected page or timestamp was among the retrieved chunks |
+| **answer_match_%** | The answer contained the expected facts (whole-word match; `a\|b` accepts either) |
+| **verified_%** | The answer passed both the grounded and relevance checks (no fallback) |
+| **avg_attempts / avg_seconds** | How hard the self-correction loop worked, and how long it took |
+
+```bash
+python evaluate.py eval_attention_paper.json                     # defaults from the file
+python evaluate.py eval_attention_paper.json --model mistral --k 5 --chunk-size 800
+```
+
+Each run is saved to `eval_results/` (gitignored), so you can compare models, prompts and chunk settings over time. To evaluate your own documents, copy `eval_attention_paper.json` and change `sources` and `cases`.
+
+---
+
 ## 🗂️ Project Structure
 
 ```
@@ -175,7 +204,10 @@ LoreLoop/
 ├── agent.py          # LangGraph agent — state, nodes, edges, dual grader, pipeline builder
 ├── app.py            # Streamlit web UI with telemetry and parameter controls
 ├── main.py           # CLI interface with iteration diagnostics
-├── requirements.txt  # Python dependencies
+├── evaluate.py       # Scores the agent on a question set → eval_results/
+├── eval_attention_paper.json  # Sample eval set (11 questions on 'Attention Is All You Need')
+├── test_agent.py     # Offline self-check (fake LLM, no Ollama needed): python test_agent.py
+├── requirements.txt  # Python dependencies (pinned)
 ├── .gitignore
 └── README.md
 ```
@@ -185,25 +217,29 @@ LoreLoop/
 ## 📦 Key Dependencies
 
 ```
-langchain
 langchain-community
+langchain-core
 langchain-huggingface
 langchain-ollama
+langchain-text-splitters
 langgraph
 faiss-cpu
+rank_bm25
 streamlit
 youtube-transcript-api
 pypdf
 sentence-transformers
 ```
 
+Exact versions are pinned in `requirements.txt`.
+
 ---
 
 ## ⚠️ Known Limitations
 
 - **LLM-as-judge** — Implemented dual-graded self-correction; identified that local 8B models have reliability ceiling as LLM-as-judge — production deployment would require a stronger model or dedicated NLI scorer.
-- **Single document per session** — the current implementation indexes one source at a time. Multi-document support is a planned upgrade.
-- **Local model quality** — grounding and relevance accuracy are directly tied to the capability of the Ollama model you pull. `llama3` is recommended as the minimum. 
+- **Index cache grows** — `rag_index/` keeps one folder per (sources, chunk settings) combination; delete it to reclaim space.
+- **Local model quality** — grounding and relevance accuracy are directly tied to the capability of the Ollama model you pull. `llama3` is recommended as the minimum.
 
 ---
 

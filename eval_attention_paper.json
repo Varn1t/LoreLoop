@@ -1,0 +1,29 @@
+{
+  "description": "Fact questions on 'Attention Is All You Need' (Vaswani et al., 2017). Pages verified against the arXiv PDF.",
+  "sources": ["https://arxiv.org/pdf/1706.03762"],
+  "settings": {"model": "llama3", "k": 3, "chunk_size": 1000, "chunk_overlap": 50, "max_iterations": 3},
+  "cases": [
+    {"question": "How many layers are in the Transformer encoder stack?",
+     "expect_source": ["1706.03762, p. 3"], "expect_in_answer": ["6|six"]},
+    {"question": "What is the dimensionality d_model of the base model's outputs?",
+     "expect_source": ["1706.03762, p. 3", "1706.03762, p. 5"], "expect_in_answer": ["512"]},
+    {"question": "How many parallel attention heads does the base model use?",
+     "expect_source": ["1706.03762, p. 5"], "expect_in_answer": ["8|eight"]},
+    {"question": "What is the inner-layer dimensionality of the position-wise feed-forward network?",
+     "expect_source": ["1706.03762, p. 5"], "expect_in_answer": ["2048"]},
+    {"question": "Which optimizer was used to train the Transformer?",
+     "expect_source": ["1706.03762, p. 7"], "expect_in_answer": ["Adam"]},
+    {"question": "What hardware were the models trained on?",
+     "expect_source": ["1706.03762, p. 7"], "expect_in_answer": ["P100"]},
+    {"question": "For how many training steps was the base model trained?",
+     "expect_source": ["1706.03762, p. 7"], "expect_in_answer": ["100,000|100K|100000"]},
+    {"question": "About how many sentence pairs are in the WMT 2014 English-German dataset?",
+     "expect_source": ["1706.03762, p. 7"], "expect_in_answer": ["4.5 million"]},
+    {"question": "What dropout rate was used for the base model?",
+     "expect_source": ["1706.03762, p. 8"], "expect_in_answer": ["0.1"]},
+    {"question": "What BLEU score did the big Transformer achieve on WMT 2014 English-to-German?",
+     "expect_source": ["1706.03762, p. 1", "1706.03762, p. 8"], "expect_in_answer": ["28.4"]},
+    {"question": "What BLEU score did the Transformer reach on WMT 2014 English-to-French?",
+     "expect_source": ["1706.03762, p. 1", "1706.03762, p. 8"], "expect_in_answer": ["41.8|41.0"]}
+  ]
+}
