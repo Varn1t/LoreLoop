@@ -1,0 +1,552 @@
+{
+ "description": "Fact questions over two papers loaded together: 'Attention Is All You Need' (1706.03762) and BERT (1810.04805). Expected pages found by matching an anchor phrase and the answer in the loader's page text.",
+ "sources": [
+  "https://arxiv.org/pdf/1706.03762",
+  "https://arxiv.org/pdf/1810.04805"
+ ],
+ "settings": {
+  "model": "llama3",
+  "k": 5,
+  "chunk_size": 1000,
+  "chunk_overlap": 50,
+  "max_iterations": 3
+ },
+ "cases": [
+  {
+   "question": "In the Transformer paper (Attention Is All You Need), how many layers are in the Transformer encoder stack?",
+   "expect_source": [
+    "1706.03762, p. 3"
+   ],
+   "expect_in_answer": [
+    "6|six"
+   ]
+  },
+  {
+   "question": "In the Transformer paper (Attention Is All You Need), what is the dimensionality d_model of the base model's outputs?",
+   "expect_source": [
+    "1706.03762, p. 3",
+    "1706.03762, p. 5"
+   ],
+   "expect_in_answer": [
+    "512"
+   ]
+  },
+  {
+   "question": "In the Transformer paper (Attention Is All You Need), how many parallel attention heads does the base model use?",
+   "expect_source": [
+    "1706.03762, p. 5"
+   ],
+   "expect_in_answer": [
+    "8|eight"
+   ]
+  },
+  {
+   "question": "In the Transformer paper (Attention Is All You Need), what is the inner-layer dimensionality of the position-wise feed-forward network?",
+   "expect_source": [
+    "1706.03762, p. 5"
+   ],
+   "expect_in_answer": [
+    "2048"
+   ]
+  },
+  {
+   "question": "In the Transformer paper (Attention Is All You Need), which optimizer was used to train the Transformer?",
+   "expect_source": [
+    "1706.03762, p. 7"
+   ],
+   "expect_in_answer": [
+    "Adam"
+   ]
+  },
+  {
+   "question": "In the Transformer paper (Attention Is All You Need), what hardware were the models trained on?",
+   "expect_source": [
+    "1706.03762, p. 7"
+   ],
+   "expect_in_answer": [
+    "P100"
+   ]
+  },
+  {
+   "question": "In the Transformer paper (Attention Is All You Need), for how many training steps was the base model trained?",
+   "expect_source": [
+    "1706.03762, p. 7"
+   ],
+   "expect_in_answer": [
+    "100,000|100K|100000"
+   ]
+  },
+  {
+   "question": "In the Transformer paper (Attention Is All You Need), about how many sentence pairs are in the WMT 2014 English-German dataset?",
+   "expect_source": [
+    "1706.03762, p. 7"
+   ],
+   "expect_in_answer": [
+    "4.5 million"
+   ]
+  },
+  {
+   "question": "In the Transformer paper (Attention Is All You Need), what dropout rate was used for the base model?",
+   "expect_source": [
+    "1706.03762, p. 8"
+   ],
+   "expect_in_answer": [
+    "0.1"
+   ]
+  },
+  {
+   "question": "In the Transformer paper (Attention Is All You Need), what BLEU score did the big Transformer achieve on WMT 2014 English-to-German?",
+   "expect_source": [
+    "1706.03762, p. 1",
+    "1706.03762, p. 8"
+   ],
+   "expect_in_answer": [
+    "28.4"
+   ]
+  },
+  {
+   "question": "In the Transformer paper (Attention Is All You Need), what BLEU score did the Transformer reach on WMT 2014 English-to-French?",
+   "expect_source": [
+    "1706.03762, p. 1",
+    "1706.03762, p. 8"
+   ],
+   "expect_in_answer": [
+    "41.8|41.0"
+   ]
+  },
+  {
+   "question": "In the Transformer paper (Attention Is All You Need), what is the dimension d_k of the keys in the base model?",
+   "expect_source": [
+    "1706.03762, p. 5"
+   ],
+   "expect_in_answer": [
+    "64"
+   ]
+  },
+  {
+   "question": "In the Transformer paper (Attention Is All You Need), what label smoothing value was used?",
+   "expect_source": [
+    "1706.03762, p. 8"
+   ],
+   "expect_in_answer": [
+    "0.1"
+   ]
+  },
+  {
+   "question": "In the Transformer paper (Attention Is All You Need), how many warmup steps were used for the learning rate schedule?",
+   "expect_source": [
+    "1706.03762, p. 7"
+   ],
+   "expect_in_answer": [
+    "4000|4,000"
+   ]
+  },
+  {
+   "question": "In the Transformer paper (Attention Is All You Need), what beam size was used for translation?",
+   "expect_source": [
+    "1706.03762, p. 8"
+   ],
+   "expect_in_answer": [
+    "4|four"
+   ]
+  },
+  {
+   "question": "In the Transformer paper (Attention Is All You Need), what value of Adam beta2 was used?",
+   "expect_source": [
+    "1706.03762, p. 7"
+   ],
+   "expect_in_answer": [
+    "0.98"
+   ]
+  },
+  {
+   "question": "In the Transformer paper (Attention Is All You Need), how long did the big models take to train?",
+   "expect_source": [
+    "1706.03762, p. 1",
+    "1706.03762, p. 7",
+    "1706.03762, p. 8"
+   ],
+   "expect_in_answer": [
+    "3.5"
+   ]
+  },
+  {
+   "question": "In the Transformer paper (Attention Is All You Need), how many GPUs were the models trained on?",
+   "expect_source": [
+    "1706.03762, p. 7"
+   ],
+   "expect_in_answer": [
+    "8|eight"
+   ]
+  },
+  {
+   "question": "In the Transformer paper (Attention Is All You Need), how long did each training step take for the base models?",
+   "expect_source": [
+    "1706.03762, p. 7"
+   ],
+   "expect_in_answer": [
+    "0.4"
+   ]
+  },
+  {
+   "question": "In the Transformer paper (Attention Is All You Need), how many sentences are in the WMT 2014 English-French dataset?",
+   "expect_source": [
+    "1706.03762, p. 7"
+   ],
+   "expect_in_answer": [
+    "36M|36 million"
+   ]
+  },
+  {
+   "question": "In the Transformer paper (Attention Is All You Need), what dataset was used for English constituency parsing?",
+   "expect_source": [
+    "1706.03762, p. 9"
+   ],
+   "expect_in_answer": [
+    "Wall Street Journal|WSJ|Penn Treebank"
+   ]
+  },
+  {
+   "question": "In the Transformer paper (Attention Is All You Need), about how many training sentences does the WSJ portion of the Penn Treebank have?",
+   "expect_source": [
+    "1706.03762, p. 9",
+    "1706.03762, p. 10"
+   ],
+   "expect_in_answer": [
+    "40K|40,000|40000"
+   ]
+  },
+  {
+   "question": "In the Transformer paper (Attention Is All You Need), what F1 score did the Transformer reach on WSJ section 23 in the semi-supervised setting?",
+   "expect_source": [
+    "1706.03762, p. 10"
+   ],
+   "expect_in_answer": [
+    "92.7"
+   ]
+  },
+  {
+   "question": "In the Transformer paper (Attention Is All You Need), what functions are used for the positional encodings?",
+   "expect_source": [
+    "1706.03762, p. 6"
+   ],
+   "expect_in_answer": [
+    "sine|sinusoid|sinusoidal|cosine"
+   ]
+  },
+  {
+   "question": "In the Transformer paper (Attention Is All You Need), how many sub-layers does each decoder layer have?",
+   "expect_source": [
+    "1706.03762, p. 3"
+   ],
+   "expect_in_answer": [
+    "three|3"
+   ]
+  },
+  {
+   "question": "In the Transformer paper (Attention Is All You Need), what dropout rate was used for the big English-French model?",
+   "expect_source": [
+    "1706.03762, p. 8"
+   ],
+   "expect_in_answer": [
+    "0.1"
+   ]
+  },
+  {
+   "question": "In the Transformer paper (Attention Is All You Need), approximately how many source tokens did each training batch contain?",
+   "expect_source": [
+    "1706.03762, p. 7"
+   ],
+   "expect_in_answer": [
+    "25000|25,000"
+   ]
+  },
+  {
+   "question": "In the Transformer paper (Attention Is All You Need), how many checkpoints were averaged for the base models?",
+   "expect_source": [
+    "1706.03762, p. 8"
+   ],
+   "expect_in_answer": [
+    "5|five"
+   ]
+  },
+  {
+   "question": "In the Transformer paper (Attention Is All You Need), how many checkpoints were averaged for the big models?",
+   "expect_source": [
+    "1706.03762, p. 8"
+   ],
+   "expect_in_answer": [
+    "20|twenty"
+   ]
+  },
+  {
+   "question": "In the Transformer paper (Attention Is All You Need), what is the shared source-target vocabulary size for English-German?",
+   "expect_source": [
+    "1706.03762, p. 7"
+   ],
+   "expect_in_answer": [
+    "37000|37,000"
+   ]
+  },
+  {
+   "question": "In the Transformer paper (Attention Is All You Need), what word-piece vocabulary size was used for English-French?",
+   "expect_source": [
+    "1706.03762, p. 7"
+   ],
+   "expect_in_answer": [
+    "32000|32,000"
+   ]
+  },
+  {
+   "question": "In the BERT paper, how many layers does BERT-BASE have?",
+   "expect_source": [
+    "1810.04805, p. 3"
+   ],
+   "expect_in_answer": [
+    "12|twelve"
+   ]
+  },
+  {
+   "question": "In the BERT paper, what is the hidden size of BERT-BASE?",
+   "expect_source": [
+    "1810.04805, p. 3"
+   ],
+   "expect_in_answer": [
+    "768"
+   ]
+  },
+  {
+   "question": "In the BERT paper, how many total parameters does BERT-BASE have?",
+   "expect_source": [
+    "1810.04805, p. 3",
+    "1810.04805, p. 8"
+   ],
+   "expect_in_answer": [
+    "110M|110 million"
+   ]
+  },
+  {
+   "question": "In the BERT paper, how many total parameters does BERT-LARGE have?",
+   "expect_source": [
+    "1810.04805, p. 3",
+    "1810.04805, p. 8"
+   ],
+   "expect_in_answer": [
+    "340M|340 million"
+   ]
+  },
+  {
+   "question": "In the BERT paper, how many layers does BERT-LARGE have?",
+   "expect_source": [
+    "1810.04805, p. 3"
+   ],
+   "expect_in_answer": [
+    "24"
+   ]
+  },
+  {
+   "question": "In the BERT paper, what is the hidden size of BERT-LARGE?",
+   "expect_source": [
+    "1810.04805, p. 3",
+    "1810.04805, p. 8"
+   ],
+   "expect_in_answer": [
+    "1024"
+   ]
+  },
+  {
+   "question": "In the BERT paper, besides the masked language model, what is the second pre-training task?",
+   "expect_source": [
+    "1810.04805, p. 2",
+    "1810.04805, p. 4",
+    "1810.04805, p. 8",
+    "1810.04805, p. 13"
+   ],
+   "expect_in_answer": [
+    "next sentence"
+   ]
+  },
+  {
+   "question": "In the BERT paper, what percentage of WordPiece tokens are masked at random during pre-training?",
+   "expect_source": [
+    "1810.04805, p. 4",
+    "1810.04805, p. 12",
+    "1810.04805, p. 13",
+    "1810.04805, p. 16"
+   ],
+   "expect_in_answer": [
+    "15"
+   ]
+  },
+  {
+   "question": "In the BERT paper, what share of the chosen tokens is replaced with the [MASK] token?",
+   "expect_source": [
+    "1810.04805, p. 4",
+    "1810.04805, p. 12",
+    "1810.04805, p. 16"
+   ],
+   "expect_in_answer": [
+    "80"
+   ]
+  },
+  {
+   "question": "In the BERT paper, which two corpora were used for pre-training?",
+   "expect_source": [
+    "1810.04805, p. 5",
+    "1810.04805, p. 14"
+   ],
+   "expect_in_answer": [
+    "BooksCorpus"
+   ]
+  },
+  {
+   "question": "In the BERT paper, how many words does the BooksCorpus contain?",
+   "expect_source": [
+    "1810.04805, p. 5",
+    "1810.04805, p. 14"
+   ],
+   "expect_in_answer": [
+    "800M|800 million"
+   ]
+  },
+  {
+   "question": "In the BERT paper, how many words does English Wikipedia contribute to pre-training?",
+   "expect_source": [
+    "1810.04805, p. 5",
+    "1810.04805, p. 14"
+   ],
+   "expect_in_answer": [
+    "2,500M|2500M|2.5 billion|2,500 million"
+   ]
+  },
+  {
+   "question": "In the BERT paper, what size of WordPiece vocabulary does BERT use?",
+   "expect_source": [
+    "1810.04805, p. 4"
+   ],
+   "expect_in_answer": [
+    "30,000|30000|30k"
+   ]
+  },
+  {
+   "question": "In the BERT paper, what special token is placed at the start of every input sequence?",
+   "expect_source": [
+    "1810.04805, p. 3",
+    "1810.04805, p. 4",
+    "1810.04805, p. 5",
+    "1810.04805, p. 7",
+    "1810.04805, p. 13",
+    "1810.04805, p. 14",
+    "1810.04805, p. 15"
+   ],
+   "expect_in_answer": [
+    "CLS"
+   ]
+  },
+  {
+   "question": "In the BERT paper, what batch size, in sequences, was used for pre-training?",
+   "expect_source": [
+    "1810.04805, p. 13"
+   ],
+   "expect_in_answer": [
+    "256"
+   ]
+  },
+  {
+   "question": "In the BERT paper, for how many steps was BERT pre-trained?",
+   "expect_source": [
+    "1810.04805, p. 13",
+    "1810.04805, p. 16"
+   ],
+   "expect_in_answer": [
+    "1,000,000|1000000|1M|one million|1 million"
+   ]
+  },
+  {
+   "question": "In the BERT paper, approximately how many epochs over the corpus did pre-training take?",
+   "expect_source": [
+    "1810.04805, p. 13"
+   ],
+   "expect_in_answer": [
+    "40"
+   ]
+  },
+  {
+   "question": "In the BERT paper, what activation function does BERT use?",
+   "expect_source": [
+    "1810.04805, p. 13"
+   ],
+   "expect_in_answer": [
+    "gelu"
+   ]
+  },
+  {
+   "question": "In the BERT paper, what hardware was BERT pre-trained on?",
+   "expect_source": [
+    "1810.04805, p. 13"
+   ],
+   "expect_in_answer": [
+    "TPU|TPUs"
+   ]
+  },
+  {
+   "question": "In the BERT paper, what GLUE score did BERT-LARGE obtain?",
+   "expect_source": [
+    "1810.04805, p. 1",
+    "1810.04805, p. 6"
+   ],
+   "expect_in_answer": [
+    "80.5"
+   ]
+  },
+  {
+   "question": "In the BERT paper, what test F1 did BERT reach on SQuAD v1.1?",
+   "expect_source": [
+    "1810.04805, p. 1",
+    "1810.04805, p. 6",
+    "1810.04805, p. 7"
+   ],
+   "expect_in_answer": [
+    "93.2"
+   ]
+  },
+  {
+   "question": "In the BERT paper, what test F1 did BERT reach on SQuAD v2.0?",
+   "expect_source": [
+    "1810.04805, p. 1",
+    "1810.04805, p. 7"
+   ],
+   "expect_in_answer": [
+    "83.1"
+   ]
+  },
+  {
+   "question": "In the BERT paper, what accuracy did BERT-LARGE achieve on SWAG?",
+   "expect_source": [
+    "1810.04805, p. 7"
+   ],
+   "expect_in_answer": [
+    "86.3"
+   ]
+  },
+  {
+   "question": "In the BERT paper, how much absolute improvement did BERT achieve on MultiNLI accuracy?",
+   "expect_source": [
+    "1810.04805, p. 1",
+    "1810.04805, p. 6"
+   ],
+   "expect_in_answer": [
+    "4.6"
+   ]
+  },
+  {
+   "question": "In the BERT paper, what is the maximum sequence length in tokens used during pre-training?",
+   "expect_source": [
+    "1810.04805, p. 13"
+   ],
+   "expect_in_answer": [
+    "512"
+   ]
+  }
+ ]
+}
